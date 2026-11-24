@@ -44,16 +44,24 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            const Text('fihh'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: DecoratedBox(
+        decoration:BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('web/images/fihh.jpg'),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: .center,
+            children: [
+              const Text('fihh'),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
