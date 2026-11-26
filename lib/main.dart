@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,13 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,31 +39,37 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: DecoratedBox(
-        decoration:BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('web/images/fihh.jpg'),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              const Text('fihh'),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+      body: SfCartesianChart(
+        primaryXAxis: CategoryAxis(),
+            // Chart title
+            title: ChartTitle(text: 'Half yearly sales analysis'),
+            // Enable legend
+            legend: Legend(isVisible: true),
+        primaryYAxis: NumericAxis(),
+        series: <LineSeries<SalesData, String>>[
+          LineSeries<SalesData, String>(
+            dataSource: [
+              SalesData('Mon', 15),
+              SalesData('Tue', 12),
+              SalesData('Wed', 11),
+              SalesData('Thu', 9),
+              SalesData('Fri', 16),
+              SalesData('Sat', 22),
+              SalesData('Sun', 34),
             ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+            xValueMapper: (SalesData sales, _) => sales.year,
+            yValueMapper: (SalesData sales, _) => sales.sales,
+
+            dataLabelSettings: DataLabelSettings(isVisible: true),
+          )
+        ]
       ),
     );
   }
+}
+
+class SalesData {
+  SalesData(this.year, this.sales);
+  final String year;
+  final double sales;
 }
