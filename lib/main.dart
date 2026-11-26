@@ -1,73 +1,110 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(
+    home: HomePage()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'fihh',
-      theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.blue),
-      ),
-      home: const MyHomePage(title: 'fihh'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+      appBar: AppBar(title: const Text('Home Screen'),
       ),
       body: DecoratedBox(
         decoration:BoxDecoration(
+          /*
           image: DecorationImage(
             image: AssetImage('web/images/fihh.jpg'),
             fit: BoxFit.fill,
           ),
+          */
         ),
         child: Center(
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              const Text('fihh'),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
+          child: Container(
+              height: 500,
+              width: 800,
+              decoration: BoxDecoration(
+              color: Colors.white, 
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(width: 5, color: Colors.black)
               ),
-            ],
-          ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                
+                //left part
+                Container(
+                  margin: EdgeInsetsGeometry.directional(start: 8),
+                  height: 475,
+                  width: 410,
+                  decoration: BoxDecoration(
+                  color: Colors.white, 
+                  ),
+                child: Column(
+                  children: [
+                    Text('Hello')
+                  ],
+                ),
+                ),
+
+                //right part
+                Container(
+                  margin: EdgeInsetsGeometry.directional(end: 8),
+                  height: 475,
+                  width: 350,
+                  decoration: BoxDecoration(
+                  color: Colors.white, 
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(width: 5, color: Colors.black)
+                  ),
+                  child: Column(
+                  mainAxisAlignment: .center,
+                  children: [
+
+                  //add shit
+
+                    Text(
+                    'Yes',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+
+                    ElevatedButton(
+                    onPressed:(){
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SecondPage()),
+                      );
+                    }, child: const Text('Calculate Net Profit')
+                    ), 
+                  ],
+                  )
+                )
+                ]  
+              ),
         ),
+        
+       ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Results'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          }, child: const Text('New Instance'))
       ),
     );
   }
