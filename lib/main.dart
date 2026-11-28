@@ -54,15 +54,19 @@ ProTable<Summary> summary_table = ProTable<Summary>(
       value: (t) => t.sum_net_profit?.toStringAsFixed(2) ?? '',
     ),
   ],
-  rows: [
-    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
-    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
-    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
-    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
-  ],
+  rows: summary_list,
 );
 
-ProTable<Transaction> transactions_table = ProTable<Transaction>(
+var summary_list = [
+    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
+    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
+    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,),
+    Summary(sum_date: DateTime(2023, 1, 1), sum_gross_profit: 1000.0,sum_expenses: 500.0, sum_net_profit: 500.0,)
+];
+
+Widget? transaction_table() {
+  error = '';
+  return ProTable<Transaction>(
   enableSearch: false,
   rowKey: (t) => t.trans_id,
   columns: [
@@ -83,16 +87,47 @@ ProTable<Transaction> transactions_table = ProTable<Transaction>(
       cellBuilder: (_, t, _) => Text('\$${t.trans_price.toStringAsFixed(2)}'),
     ),
   ],
-  rows: [
+  rows: transactions_list,
+  );
+}
+
+var transactions_list = [
     Transaction(trans_id: '1', trans_datetime: '2023-01-01 12:00', trans_price: 100.0),
     Transaction(trans_id: '2', trans_datetime: '2023-01-02 13:30', trans_price: 150.5),
     Transaction(trans_id: '3', trans_datetime: '2023-01-03 15:45', trans_price: 200.75),
-  ],
-);
+];
+
+void addEntry() {
+  error = '';
+  try {
+    num = double.parse(_getText3.text.toString());
+    
+  }
+  catch(e) {
+    numCheck = true;
+    error = 'Invalid Entry';
+  }
+
+  String newId = _getText1.text.trim();
+  if (!numCheck) {
+      transactions_list.add(Transaction(trans_id: newId, trans_datetime: '2023-01-04 18:00', trans_price: num));
+  }
+  numCheck = false;
+}
+
+void deleteEntry() {
+  transactions_list.removeWhere((item) => item.trans_id == _getText1.text);
+}
 
 void main() {
-  runApp(const MaterialApp(
-    home: HomePage()));
+  runApp(
+    MaterialApp(
+    routes: {
+      '/': (context) => const HomePage(),
+      '/details': (context) => const SecondPage(),
+    }
+    )
+  );
 }
 
 class HomePage extends StatefulWidget {
@@ -102,9 +137,17 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+// all static goes here
+
 double? windowWidth = 1000;
 double? windowHeight = 800;
 bool display_transactions = false;
+bool numCheck = false;
+String error = '';
+double num = 0;
+final _getText1 = TextEditingController();
+  //final _getText2 = TextEditingController();
+final _getText3 = TextEditingController();
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -128,6 +171,7 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [  
+
                 //left part
                 Container(
                   height: windowHeight! * 0.8, width: windowWidth! * 0.5,
@@ -167,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: windowHeight! * 0.4,
                         width: windowWidth! * 0.5,
-                        child: display_transactions ? transactions_table : summary_table,
+                        child: display_transactions ? transaction_table() : summary_table,
                       ),
                     ],
                   ),
@@ -181,20 +225,65 @@ class _HomePageState extends State<HomePage> {
                   border: Border.all(width: 2, color: Colors.black)
                   ),
                   child: Column(
-                    mainAxisAlignment: .center,
+                    mainAxisAlignment: .spaceEvenly,
+                    crossAxisAlignment: .center,
                     children: [
+                      Text('Fill up the ID',
+                    style: TextStyle(color: Colors.black),
+                    ),
+                    SizedBox(
+                    width: 90,
+                    height: 60,
+                    child: TextField(
+                    controller: _getText1,
+                    decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    ),
+                    maxLength: 4
+                    )
+                    ),
 
-                  //add shit
+                    Text('Fill up the Price',
+                    style: TextStyle(color: Colors.black),
+                    ),
+                    SizedBox(
+                    width: 120,
+                    height: 60,
+                    child: TextField(
+                    controller: _getText3,
+                    decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    ),
+                    maxLength: 8
+                    )
+                    ),
 
-                    Text('Yes',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    Text('$error',
+                    style: TextStyle(color: Colors.red),
                     ),
 
                     ElevatedButton(
                     onPressed:(){
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SecondPage()),
+                      addEntry();
+                      setState(() {
+                        error = error;
+                      });
+                    }, child: const Text('Add Entry')
+                    ),
+
+                    ElevatedButton(
+                    onPressed:(){
+                      deleteEntry();
+                      setState(() {
+                        error = 'deleted';
+                      });
+                    }, child: const Text('Delete Entry')
+                    ),
+
+                    ElevatedButton(
+                    onPressed:(){
+                      Navigator.pushNamed(
+                        context, '/details'
                       );
                     }, child: const Text('Calculate Net Profit')
                     ), 
