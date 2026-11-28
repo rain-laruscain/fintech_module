@@ -1,3 +1,4 @@
+import 'package:fintech_module/chart_display.dart';
 import 'package:flutter/material.dart';
 import 'transactions.dart';
 
@@ -85,11 +86,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Column(
                     children: [
-                      // graph
+                      buildchart(x: windowHeight, y: windowWidth),
+                      /*// graph
                       Placeholder(
                         fallbackHeight: windowHeight! * 0.3,
                         fallbackWidth: windowWidth! * 0.2,
-                      ),
+                      ),*/
                       // table and graph options
                       Container(
                         margin: EdgeInsetsGeometry.all(10),
