@@ -9,6 +9,7 @@ class Transaction {
   String trans_id = "";
   String trans_datetime = "";
   double trans_price = 0.0;
+  static bool trans_deleted = false;
 
   Transaction({
     this.trans_id = '',
@@ -21,6 +22,12 @@ class Transaction {
     trans_datetime = dateTimeFormat.format(DateTime.now());
     trans_price = price;
     global_transactions?.add(this);
+  }
+
+  Transaction.delete(String id) {
+    int id_count = global_transactions.length;
+    global_transactions.removeWhere((t) => t!.trans_id == id);
+    trans_deleted = global_transactions.length < id_count;
   }
 }
 

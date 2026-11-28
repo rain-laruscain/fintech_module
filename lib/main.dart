@@ -1,28 +1,5 @@
 import 'package:flutter/material.dart';
 import 'transactions.dart';
-import 'package:flutter_pro_table/flutter_pro_table.dart';
-
-void addEntry() {
-  error = '';
-  try {
-    num = double.parse(_getText3.text.toString());
-    
-  }
-  catch(e) {
-    numCheck = true;
-    error = 'Invalid Entry';
-  }
-
-  String newId = _getText1.text.trim();
-  if (!numCheck) {
-      transactions_list.add(Transaction(trans_id: newId, trans_datetime: '2023-01-04 18:00', trans_price: num));
-  }
-  numCheck = false;
-}
-
-void deleteEntry() {
-  transactions_list.removeWhere((item) => item.trans_id == _getText1.text);
-}
 
 void main() {
   runApp(
@@ -33,6 +10,30 @@ void main() {
     }
     )
   );
+}
+
+void addEntry() {
+  error = '';
+  double price = 0;
+  try {
+    price = double.parse(_getText3.text.toString());
+  }
+  catch(e) {
+    error = 'This is not a price tag.';
+    return;
+  }
+  Transaction.create(price);
+}
+
+void deleteEntry() {
+  String id=_getText1.text;
+  Transaction.delete(id);
+    if (!Transaction.trans_deleted) {
+    error = 'ID not found.';
+    }
+  else {
+    error = 'Deleted!';
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -48,7 +49,6 @@ double? windowWidth = 1000;
 double? windowHeight = 800;
 bool display_transactions = false;
 bool numCheck = false;
-double num = 0;
 String error = '';
 final _getText1 = TextEditingController();
   //final _getText2 = TextEditingController();
@@ -133,18 +133,8 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: .spaceEvenly,
                     crossAxisAlignment: .center,
                     children: [
-                    Text('Fill up the ID',style: TextStyle(color: Colors.black),),
-                    SizedBox(
-                      width: 90,
-                      height: 60,
-                      child: TextField(
-                      controller: _getText1,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLength: 4
-                    )),
-                    Text('Fill up the Price', style: TextStyle(color: Colors.black),),
+
+                    Text('Insert a Price to Make a New Transaction.', style: TextStyle(color: Colors.black),),
                     SizedBox(
                       width: 120,
                       height: 60,
@@ -155,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       maxLength: 8
                     )),
-                    Text('$error',style: TextStyle(color: Colors.red),),
+
                     ElevatedButton(
                       onPressed:(){
                         addEntry();
@@ -165,14 +155,28 @@ class _HomePageState extends State<HomePage> {
                       }, child: const Text('Add Entry')
                     ),
 
+                    Text('Fill up the ID of a Transaction You Wish to Delete.',style: TextStyle(color: Colors.black),),
+                    SizedBox(
+                      width: 90,
+                      height: 60,
+                      child: TextField(
+                      controller: _getText1,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      maxLength: 4
+                    )),
+                    
                     ElevatedButton(
                       onPressed:(){
                         deleteEntry();
                         setState(() {
-                          error = 'deleted';
+                          error = error;
                         });
                       }, child: const Text('Delete Entry')
                     ),
+
+                    Text('$error',style: TextStyle(color: Colors.red),),
 
                     ElevatedButton(
                       onPressed:(){
@@ -206,7 +210,7 @@ class SecondPage extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
-          }, child: const Text('New Instance'))
+          }, child: const Text('Go Back'))
       ),
     );
   }
