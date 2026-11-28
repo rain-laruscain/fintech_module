@@ -9,7 +9,7 @@ class Transaction {
   String trans_id = "";
   String trans_datetime = "";
   double trans_price = 0.0;
-  static bool trans_deleted = false;
+  static bool trans_complete = false;
 
   Transaction({
     this.trans_id = '',
@@ -24,10 +24,25 @@ class Transaction {
     global_transactions?.add(this);
   }
 
+  Transaction.edit(String id, double price) {
+    trans_complete = false;
+  for (Transaction? t in global_transactions) {
+    if (t!.trans_id == id) {
+    t.trans_price = price;
+    trans_complete = true;
+  }
+  }
+  }
+
   Transaction.delete(String id) {
-    int id_count = global_transactions.length;
-    global_transactions.removeWhere((t) => t!.trans_id == id);
-    trans_deleted = global_transactions.length < id_count;
+    trans_complete = false;
+    for (Transaction? t in global_transactions) {
+    if (t!.trans_id == id) {
+    global_transactions.remove(t);
+    trans_complete = true;
+  }
+  
+  }
   }
 }
 

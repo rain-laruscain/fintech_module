@@ -14,7 +14,6 @@ void main() {
 
 void addEntry() {
   error = '';
-  double price = 0;
   try {
     price = double.parse(_getText3.text.toString());
   }
@@ -25,10 +24,29 @@ void addEntry() {
   Transaction.create(price);
 }
 
+void editEntry() {
+  error = '';
+  try {
+    price = double.parse(_getText3.text.toString());
+    id=_getText1.text;
+  }
+  catch(e) {
+    error = 'This is not a price tag.';
+    return;
+  }
+  Transaction.edit(id, price);
+  if (!Transaction.trans_complete) {
+    error = 'ID not found.';
+    }
+  else {
+    error = 'Updated!';
+  }
+}
+
 void deleteEntry() {
-  String id=_getText1.text;
+  id=_getText1.text;
   Transaction.delete(id);
-    if (!Transaction.trans_deleted) {
+    if (!Transaction.trans_complete) {
     error = 'ID not found.';
     }
   else {
@@ -43,6 +61,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
 // all static goes here
 
 double? windowWidth = 1000;
@@ -50,11 +69,20 @@ double? windowHeight = 800;
 bool display_transactions = false;
 bool numCheck = false;
 String error = '';
+String id = '';
+double price = 0;
 final _getText1 = TextEditingController();
   //final _getText2 = TextEditingController();
 final _getText3 = TextEditingController();
 
 class _HomePageState extends State<HomePage> {
+
+  void errorSet() {
+  setState(() {
+   error = error;
+  });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,12 +157,14 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white, 
                   border: Border.all(width: 2, color: Colors.black)
                   ),
-                  child: Column(
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.all(15),
+                    child: Column(
                     mainAxisAlignment: .spaceEvenly,
                     crossAxisAlignment: .center,
                     children: [
 
-                    Text('Insert a Price to Make a New Transaction.', style: TextStyle(color: Colors.black),),
+                    Text('Insert Price:', style: TextStyle(color: Colors.black),),
                     SizedBox(
                       width: 120,
                       height: 60,
@@ -146,16 +176,7 @@ class _HomePageState extends State<HomePage> {
                       maxLength: 8
                     )),
 
-                    ElevatedButton(
-                      onPressed:(){
-                        addEntry();
-                        setState(() {
-                          error = error;
-                        });
-                      }, child: const Text('Add Entry')
-                    ),
-
-                    Text('Fill up the ID of a Transaction You Wish to Delete.',style: TextStyle(color: Colors.black),),
+                    Text('Insert ID:',style: TextStyle(color: Colors.black),),
                     SizedBox(
                       width: 90,
                       height: 60,
@@ -169,11 +190,24 @@ class _HomePageState extends State<HomePage> {
                     
                     ElevatedButton(
                       onPressed:(){
+                        addEntry();
+                        errorSet();
+                      }, child: const Text('Add Entry - Place Any Price You Wish!')
+                    ),
+
+                    ElevatedButton(
+                      onPressed:(){
+                        editEntry();
+                        errorSet();
+                      }, child: const Text('Edit Entry - Insert the Correct ID You Wish to Edit,'
+                      +' And Charge a New Price After!')
+                    ),
+
+                    ElevatedButton(
+                      onPressed:(){
                         deleteEntry();
-                        setState(() {
-                          error = error;
-                        });
-                      }, child: const Text('Delete Entry')
+                        errorSet();
+                      }, child: const Text('Delete Entry - Insert the Correct ID You Wish to Delete!')
                     ),
 
                     Text('$error',style: TextStyle(color: Colors.red),),
@@ -187,6 +221,7 @@ class _HomePageState extends State<HomePage> {
                     ), 
                   ],
                   )
+                  )
                 )
                 ]  
               ),
@@ -197,6 +232,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 
 class SecondPage extends StatelessWidget {
   const SecondPage({super.key});
